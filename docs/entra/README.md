@@ -1,7 +1,6 @@
 # Azure Entra ID SCIM Configuration
 
 This extension is compatible with **Microsoft Entra ID** SCIM provisioning.
-
 ### Keycloak Configuration
 
 Before Entra ID can provision users and groups to Keycloak via SCIM, you need to configure SCIM authentication settings.
@@ -33,7 +32,7 @@ Replace <your-tenant-id> with your actual Azure tenant ID.
 
 ### Azure Configuration
 
-Step-by-step guide on the Azure:
+Step-by-step guide for Azure:
 
 1. Sign in to the [Azure portal](https://portal.azure.com)
 2. Go to **Identity → Applications → Enterprise applications**
