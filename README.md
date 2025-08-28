@@ -240,7 +240,7 @@ This will ensure that when a user is provisioned via SCIM, a corresponding Ident
 ---
 
 <div id="metatavu-custom-footer"><div align="center">
-    <img src="./public/black-no-blue.jpg" alt="Organization Logo" width="100">
+    <img src="https://raw.githubusercontent.com/zippyreg/clean-sight-solutions__keycloak-scim-server/refs/heads/develop/public/black-no-bg.jpg" alt="Organization Logo" width="100">
     <p>© 2025 ARE Event Productions. All rights reserved.</p>
     <p>
         <a href="https://www.areep.com">Website</a> | 
