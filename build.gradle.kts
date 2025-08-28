@@ -1,5 +1,6 @@
 import java.util.*
 import java.io.ByteArrayOutputStream
+import java.io.File
 import javax.inject.Inject
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ProjectLayout
@@ -285,6 +286,9 @@ abstract class CheckVersionBumpTask @Inject constructor(
     @get:OutputFile
     val resultFile = layout.buildDirectory.file("version_check.txt")
 
+    // Use GITHUB_OUTPUT to write results as well as file if Actions environment detected
+    private val githubOutput = System.getenv("GITHUB_OUTPUT")
+
     @TaskAction
     fun checkVersion() {
         fun runGitCommand(vararg args: String): String {
@@ -351,8 +355,14 @@ abstract class CheckVersionBumpTask @Inject constructor(
             is_pre_release=$isPreRelease
         """.trimIndent()
 
-        // Write result for GitHub Actions
-        resultFile.get().asFile.writeText(outputText)
+        // Write result to text file for residual inspection
+        val resultFileWriter = resultFile.get().asFile
+        resultFileWriter.writeText(outputText + "\n")
+
+        githubOutput?.let { path -> 
+            val githubOutputWriter = File(path)
+            githubOutputWriter.appendText(outputText)
+        }
     }
 }
 

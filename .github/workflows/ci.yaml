@@ -91,7 +91,16 @@ jobs:
             - name: Set output for later jobs
               id: set-output
               run: |
-                cat build/version_check.txt >> $GITHUB_OUTPUT
+                echo "| Label | Value |" >> $GITHUB_STEP_SUMMARY
+                echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+                echo "| Last commit version: | ${{ steps.jacoco_reporter.outputs.coverage_percentage }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| :heavy_check_mark: Number of Lines Covered | ${{ steps.jacoco_reporter.outputs.covered_lines }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| :x: Number of Lines Missed | ${{ steps.jacoco_reporter.outputs.missed_lines }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| Total Number of Lines | ${{ steps.jacoco_reporter.outputs.total_lines }} |" >> $GITHUB_STEP_SUMMARY
+                cat build/version_check.txt
+                while IFS= read -r line; do
+                  echo "$line" >> $GITHUB_OUTPUT
+                done < build/version_check.txt
 
     create_github_release:
         name: Create Github Release
