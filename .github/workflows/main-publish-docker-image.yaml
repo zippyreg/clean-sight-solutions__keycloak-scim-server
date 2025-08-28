@@ -1,9 +1,9 @@
-name: Publish master docker image
+name: Publish main docker image
 
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   REGISTRY: ghcr.io
