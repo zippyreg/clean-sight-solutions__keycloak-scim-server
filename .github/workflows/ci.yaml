@@ -71,9 +71,15 @@ jobs:
               run: chmod +x ./gradlew
             - name: Build project
               run: |
+                  echo "::group::Build project (without running tests)"
                   ./gradlew clean build --info -x test
+                  echo "::endgroup::"
             - name: Run tests
-              run: ./gradlew test jacocoIntegrationReport --info
+              run: |
+                  echo "::group::Analyze code coverage"
+                  ./gradlew test jacocoIntegrationReport --info
+                  echo "::endgroup::"
+
             - name: JaCoCo Code Coverage Report
               id: jacoco_reporter
               uses: PavanMudigonda/jacoco-reporter@v5.0
