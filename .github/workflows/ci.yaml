@@ -39,7 +39,8 @@ jobs:
                   ./gradlew clean checkVersionBump
             - name: Set step summary details
               run: |
-                echo "| Label | Value |" >> $GITHUB_STEP_SUMMARY
+                if [[ "${{ steps.check-version.outputs.version_bumped }}" == "true" ]]; then echo ":heavy_check_mark: New version detected. Will proceed with action."; else echo ":x: No new version detected. Will not proceed with action."; fi
+                echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
                 echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
                 echo "| Last commit version | ${{ steps.check-version.outputs.from_version }} |" >> $GITHUB_STEP_SUMMARY
                 echo "| This commit version | ${{ steps.check-version.outputs.to_version }} |" >> $GITHUB_STEP_SUMMARY
@@ -74,7 +75,7 @@ jobs:
               uses: PavanMudigonda/jacoco-reporter@v5.0
               with:
                   coverage_results_path: build/reports/jacoco/jacocoIntegrationReport/jacocoIntegrationReport.xml
-                  coverage_report_name: "2a. Generate Code Coverage Report"
+                  coverage_report_name: "> 2a. Generate Code Coverage Report"
                   coverage_report_title: JaCoCo
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   skip_check_run: false
