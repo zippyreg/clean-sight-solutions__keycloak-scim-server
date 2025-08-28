@@ -19,7 +19,7 @@ jobs:
             - name: Set up JDK 21
               uses: actions/setup-java@v4
               with:
-                    java-version: '21'
+                    java-version: '25'
                     distribution: 'temurin'
                     server-id: github
                     settings-path: ${{ github.workspace }}
@@ -68,7 +68,7 @@ jobs:
         needs: test
 
         outputs:
-            version_upgraded: ${{ steps.check-version.outputs.version_bumped }}
+            version_bumped: ${{ steps.check-version.outputs.version_bumped }}
             from_version: ${{ steps.check-version.outputs.from_version }}
             to_version: ${{ steps.check-version.outputs.to_version }}
             is_pre_release: ${{ steps.check-version.outputs.is_pre_release }}
@@ -80,7 +80,7 @@ jobs:
             - name: Set up JDK 21
               uses: actions/setup-java@v4
               with:
-                    java-version: '21'
+                    java-version: '25'
                     distribution: 'temurin'
                     server-id: github
                     settings-path: ${{ github.workspace }}
@@ -96,7 +96,7 @@ jobs:
                 echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
                 echo "| Last commit version | ${{ steps.check-version.outputs.from_version }} |" >> $GITHUB_STEP_SUMMARY
                 echo "| This commit version | ${{ steps.check-version.outputs.to_version }} |" >> $GITHUB_STEP_SUMMARY
-                echo "| New version? | ${{ steps.check-version.outputs.version_upgraded }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| New version? | ${{ steps.check-version.outputs.version_bumped }} |" >> $GITHUB_STEP_SUMMARY
                 echo "| Prerelease? | ${{ steps.check-version.outputs.is_pre_release }} |" >> $GITHUB_STEP_SUMMARY
 
     create_github_release:
@@ -110,7 +110,7 @@ jobs:
             - name: Set up JDK 21
               uses: actions/setup-java@v4
               with:
-                    java-version: '21'
+                    java-version: '25'
                     distribution: 'temurin'
                     server-id: github
                     settings-path: ${{ github.workspace }}
