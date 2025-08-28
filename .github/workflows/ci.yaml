@@ -1,0 +1,120 @@
+name: ci
+
+on:
+    push:
+        branches:
+            - develop
+        paths:
+          - 'gradle.properties'
+    pull_request:
+        branches:
+            - develop
+        paths:
+          - 'gradle.properties'
+
+jobs:
+    test:
+        environment: develop
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                    java-version: '21'
+                    distribution: 'temurin'
+                    server-id: github
+                    settings-path: ${{ github.workspace }}
+            - name: Build project
+              run: |
+                  ./gradlew clean build --info -x test
+            - name: Run tests
+              run: ./gradlew test jacocoIntegrationReport --info
+            - name: JaCoCo Code Coverage Report
+              id: jacoco_reporter
+              uses: PavanMudigonda/jacoco-reporter@v5.0
+              with:
+                  coverage_results_path: build/reports/jacoco/jacocoIntegrationReport/jacocoIntegrationReport.xml
+                  coverage_report_name: Coverage
+                  coverage_report_title: JaCoCo
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  skip_check_run: false
+                  minimum_coverage: 90
+                  fail_below_threshold: false
+                  publish_only_summary: false
+            - name: Add Jacocoo report to workflow run summary
+              run: |
+                  echo "| Outcome | Value |" >> $GITHUB_STEP_SUMMARY
+                  echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Code Coverage % | ${{ steps.jacoco_reporter.outputs.coverage_percentage }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| :heavy_check_mark: Number of Lines Covered | ${{ steps.jacoco_reporter.outputs.covered_lines }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| :x: Number of Lines Missed | ${{ steps.jacoco_reporter.outputs.missed_lines }} |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Total Number of Lines | ${{ steps.jacoco_reporter.outputs.total_lines }} |" >> $GITHUB_STEP_SUMMARY
+            - name: Add coverage to PR comment
+              id: jacoco_comment
+              uses: madrapps/jacoco-report@v1.7.2
+              with:
+                  paths: build/reports/jacoco/jacocoIntegrationReport/jacocoIntegrationReport.xml
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  min-coverage-overall: 90
+                  min-coverage-changed-files: 50
+                  update-comment: true
+                  title: Code Coverage
+
+    check_if_version_upgraded:
+        name: Check if version upgraded
+        if: github.event_name == 'push'
+        runs-on: ubuntu-latest
+        needs: test
+
+        outputs:
+            version_upgraded: ${{ steps.set-output.outputs.version_bumped }}
+            to_version: ${{ steps.set-output.outputs.to_version }}
+            is_pre_release: ${{ steps.set-output.outputs.is_pre_release }}
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                    java-version: '21'
+                    distribution: 'temurin'
+                    server-id: github
+                    settings-path: ${{ github.workspace }}
+            - name: Check gradle.properties for new version
+              run: |
+                  ./gradlew clean checkVersionBump
+            - name: Set output for later jobs
+              id: set-output
+              run: |
+                cat build/version_check.txt >> $GITHUB_OUTPUT
+
+    create_github_release:
+        runs-on: ubuntu-latest
+        needs: check_if_version_upgraded
+        if: needs.check_if_version_upgraded.outputs.version_bumped == 'true'
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up JDK 21
+              uses: actions/setup-java@v4
+              with:
+                    java-version: '21'
+                    distribution: 'temurin'
+                    server-id: github
+                    settings-path: ${{ github.workspace }}
+            - name: Check gradle.properties for new version
+              run: |
+                  ./gradlew clean build -x test
+            - uses: softprops/action-gh-release@v2
+              with:
+                  name: Release v${{ needs.check_if_version_upgraded.outputs.to_version }}
+                  tag_name: v${{ needs.check_if_version_upgraded.outputs.to_version }}
+                  target_commitish: ${{ github.head_ref || github.ref }}
+                  generate_release_notes: true
+                  draft: false
+                  prerelease: ${{ needs.check_if_version_upgraded.outputs.is_pre_release == 'true' }}
+                  files: build/libs/keycloak-scim-server-{{ needs.check_if_version_upgraded.outputs.to_version }}.jar
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
