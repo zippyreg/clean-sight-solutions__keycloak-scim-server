@@ -33,11 +33,29 @@ Easiest way to use the extension is to download a JAR file from GitHub packages.
 3. Restart Keycloak.
 
 
-### Option 2: Build from Source
+### Option 2: Build from Source (with tests)
 
 1. Build the extension:
 ```bash
 ./gradlew build
+```
+2. Copy the built JAR file from `build/libs/keycloak-scim-server-<version>.jar` to the Keycloak providers directory:
+```bash
+cp build/libs/keycloak-scim-server-*.jar $KEYCLOAK_HOME/providers/
+```
+
+### Option 3: Build from Source (excluding tests)
+
+If you're really in a hurry (or short on resources), you can exclude the test run and just build a deployable JAR.
+
+> [!CAUTION]
+> This will not validate that the SCIM server still passes compliance and the resulting JAR may have issues that
+> are not seen until deployment. It's unlikely, but possible. All release binaries will be tested and therefore
+> SCIM 2.0 compliant.
+
+1. Build the extension:
+```bash
+./gradlew build -x test
 ```
 2. Copy the built JAR file from `build/libs/keycloak-scim-server-<version>.jar` to the Keycloak providers directory:
 ```bash

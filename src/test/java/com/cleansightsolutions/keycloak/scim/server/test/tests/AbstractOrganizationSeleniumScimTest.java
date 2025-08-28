@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractOrganizationSeleniumScimTest extends AbstractOrganizationScimTest {
 
@@ -166,12 +167,12 @@ public abstract class AbstractOrganizationSeleniumScimTest extends AbstractOrgan
      * 
      * @param driver web driver
      * @param by element locator
-     * @param text text to type
+     * @param text text to check for
      */
     protected void waitAndAssertDisabledInputValue(WebDriver driver, By by, String text) {
         WebDriverWait wait = new WebDriverWait(driver, DEFAULT_DURATION);
-        boolean elementContainsText = wait.until(ExpectedConditions.textToBePresentInElementValue(by, text));
-        assertEquals(true, elementContainsText);
+        boolean disabledInputValueContainsText = wait.until(ExpectedConditions.textToBePresentInElementValue(by, text));
+        assertTrue(disabledInputValueContainsText);
     }
 
     /**
