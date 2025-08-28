@@ -83,9 +83,6 @@ jobs:
                     settings-path: ${{ github.workspace }}
             - name: Mark `gradlew` as executable
               run: chmod +x ./gradlew
-            - name: Build project
-              run: |
-                  ./gradlew clean build --info -x test
             - name: Check gradle.properties for new version
               run: |
                   ./gradlew clean checkVersionBump
@@ -112,9 +109,6 @@ jobs:
             - name: Mark `gradlew` as executable
               run: chmod +x ./gradlew
             - name: Build project
-              run: |
-                  ./gradlew clean build --info -x test
-            - name: Check gradle.properties for new version
               run: |
                   ./gradlew clean build -x test
             - uses: softprops/action-gh-release@v2
