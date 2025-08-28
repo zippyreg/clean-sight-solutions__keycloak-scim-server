@@ -1,8 +1,11 @@
+#### This project is based on [Metatavu/keycloak-scim-server](https://github.com/Metatavu/keycloak-scim-server)
+
+``` 
+**TODO**: Update readme with more complete documentation
+```
+---
+
 # Keycloak SCIM 2.0 Extension
-
-### This project is based on [Metatavu/keycloak-scim-server](https://github.com/Metatavu/keycloak-scim-server)
-
-```js // TODO: Update readme with more complete documentation```
 
 This project provides a **SCIM 2.0-compliant extension** for [Keycloak](https://www.keycloak.org/), enabling SCIM-based user and group provisioning. It supports:
 
@@ -22,7 +25,7 @@ This project provides a **SCIM 2.0-compliant extension** for [Keycloak](https://
 
 Easiest way to use the extension is to download a JAR file from GitHub packages. 
 
-1. Download the latest JAR from: [GitHub Packages](https://github.com/Metatavu/keycloak-scim-server/packages/2454996)
+1. Download the latest release from: [GitHub](https://github.com/zippyreg/keycloak-scim-server/releases/latest)
 2. Copy it to your Keycloak instance:
 ```bash
    cp keycloak-scim-server-*.jar $KEYCLOAK_HOME/providers/
