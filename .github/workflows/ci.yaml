@@ -109,6 +109,11 @@ jobs:
                     distribution: 'temurin'
                     server-id: github
                     settings-path: ${{ github.workspace }}
+            - name: Mark `gradlew` as executable
+              run: chmod +x ./gradlew
+            - name: Build project
+              run: |
+                  ./gradlew clean build --info -x test
             - name: Check gradle.properties for new version
               run: |
                   ./gradlew clean build -x test
