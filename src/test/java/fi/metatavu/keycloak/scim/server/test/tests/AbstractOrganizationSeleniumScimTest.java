@@ -160,6 +160,21 @@ public abstract class AbstractOrganizationSeleniumScimTest extends AbstractOrgan
     }
 
     /**
+     * A looser asserion to be used when a disabled (non-clickable) input is expected.
+     * <p>
+     * If the disabled input does not have the text within default duration, the method will throw an exception.
+     * 
+     * @param driver web driver
+     * @param by element locator
+     * @param text text to type
+     */
+    protected void waitAndAssertDisabledInputValue(WebDriver driver, By by, String text) {
+        WebDriverWait wait = new WebDriverWait(driver, DEFAULT_DURATION);
+        boolean elementContainsText = wait.until(ExpectedConditions.textToBePresentInElementValue(by, text));
+        assertEquals(true, elementContainsText);
+    }
+
+    /**
      * Returns a By locator for a data-testid attribute
      *
      * @param dataTestId data-testid value

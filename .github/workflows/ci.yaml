@@ -10,6 +10,7 @@ on:
 
 jobs:
     test:
+        name: Run tests
         environment: develop
         runs-on: ubuntu-latest
 
@@ -89,6 +90,7 @@ jobs:
                 cat build/version_check.txt >> $GITHUB_OUTPUT
 
     create_github_release:
+        name: Create Github Release
         runs-on: ubuntu-latest
         needs: check_if_version_upgraded
         if: needs.check_if_version_upgraded.outputs.version_bumped == 'true'
