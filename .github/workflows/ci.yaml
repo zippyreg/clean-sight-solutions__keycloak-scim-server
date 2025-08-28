@@ -4,13 +4,9 @@ on:
     push:
         branches:
             - develop
-        paths:
-          - 'gradle.properties'
     pull_request:
         branches:
             - develop
-        paths:
-          - 'gradle.properties'
 
 jobs:
     test:
