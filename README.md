@@ -1,5 +1,9 @@
 # Keycloak SCIM 2.0 Extension
 
+### This project is based on [Metatavu/keycloak-scim-server](https://github.com/Metatavu/keycloak-scim-server)
+
+```js // TODO: Update readme with more complete documentation```
+
 This project provides a **SCIM 2.0-compliant extension** for [Keycloak](https://www.keycloak.org/), enabling SCIM-based user and group provisioning. It supports:
 
 - **Realm-level SCIM APIs**:  
