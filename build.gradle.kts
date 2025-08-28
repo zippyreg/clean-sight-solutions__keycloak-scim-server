@@ -351,6 +351,7 @@ abstract class CheckVersionBumpTask @Inject constructor(
 
         val outputText = """
             version_bumped=$bumped
+            from_version=$oldVersion
             to_version=$newVersion
             is_pre_release=$isPreRelease
         """.trimIndent()

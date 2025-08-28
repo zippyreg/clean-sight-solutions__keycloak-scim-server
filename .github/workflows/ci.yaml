@@ -68,9 +68,10 @@ jobs:
         needs: test
 
         outputs:
-            version_upgraded: ${{ steps.set-output.outputs.version_bumped }}
-            to_version: ${{ steps.set-output.outputs.to_version }}
-            is_pre_release: ${{ steps.set-output.outputs.is_pre_release }}
+            version_upgraded: ${{ steps.check-version.outputs.version_bumped }}
+            from_version: ${{ steps.check-version.outputs.from_version }}
+            to_version: ${{ steps.check-version.outputs.to_version }}
+            is_pre_release: ${{ steps.check-version.outputs.is_pre_release }}
 
         steps:
             - uses: actions/checkout@v4
@@ -86,21 +87,17 @@ jobs:
             - name: Mark `gradlew` as executable
               run: chmod +x ./gradlew
             - name: Check gradle.properties for new version
+              id: check-version
               run: |
                   ./gradlew clean checkVersionBump
-            - name: Set output for later jobs
-              id: set-output
+            - name: Set step summary details
               run: |
                 echo "| Label | Value |" >> $GITHUB_STEP_SUMMARY
                 echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
-                echo "| Last commit version: | ${{ steps.jacoco_reporter.outputs.coverage_percentage }} |" >> $GITHUB_STEP_SUMMARY
-                echo "| :heavy_check_mark: Number of Lines Covered | ${{ steps.jacoco_reporter.outputs.covered_lines }} |" >> $GITHUB_STEP_SUMMARY
-                echo "| :x: Number of Lines Missed | ${{ steps.jacoco_reporter.outputs.missed_lines }} |" >> $GITHUB_STEP_SUMMARY
-                echo "| Total Number of Lines | ${{ steps.jacoco_reporter.outputs.total_lines }} |" >> $GITHUB_STEP_SUMMARY
-                cat build/version_check.txt
-                while IFS= read -r line; do
-                  echo "$line" >> $GITHUB_OUTPUT
-                done < build/version_check.txt
+                echo "| Last commit version | ${{ steps.check-version.outputs.from_version }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| This commit version | ${{ steps.check-version.outputs.to_version }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| New version? | ${{ steps.check-version.outputs.version_upgraded }} |" >> $GITHUB_STEP_SUMMARY
+                echo "| Prerelease? | ${{ steps.check-version.outputs.is_pre_release }} |" >> $GITHUB_STEP_SUMMARY
 
     create_github_release:
         name: Create Github Release
