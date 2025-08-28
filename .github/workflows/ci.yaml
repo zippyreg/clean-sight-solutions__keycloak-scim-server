@@ -36,10 +36,14 @@ jobs:
             - name: Check gradle.properties for new version
               id: check-version
               run: |
-                  ./gradlew clean checkVersionBump
+                  ./gradlew clean checkVersionBump --no-daemon
             - name: Set step summary details
               run: |
-                if [[ "${{ steps.check-version.outputs.version_bumped }}" == "true" ]]; then echo ":heavy_check_mark: New version detected. Will proceed with action."; else echo ":x: No new version detected. Will not proceed with action."; fi
+                if [[ "${{ steps.check-version.outputs.version_bumped }}" == "true" ]]; then \
+                    echo ":heavy_check_mark: New version detected. Will proceed with action." >> $GITHUB_STEP_SUMMARY; \
+                    else \
+                    echo ":x: No new version detected. Will not proceed with action." >> $GITHUB_STEP_SUMMARY; \
+                    fi
                 echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
                 echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
                 echo "| Last commit version | ${{ steps.check-version.outputs.from_version }} |" >> $GITHUB_STEP_SUMMARY
@@ -120,7 +124,7 @@ jobs:
               run: chmod +x ./gradlew
             - name: Build project
               run: |
-                  ./gradlew clean build -x test
+                  ./gradlew clean build -x test --no-daemon
             - uses: softprops/action-gh-release@v2
               with:
                   name: Release v${{ needs.check_if_version_upgraded.outputs.to_version }}
